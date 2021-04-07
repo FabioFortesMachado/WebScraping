@@ -1,15 +1,15 @@
 '''
-Este website é igual uma livraria ou uma loja de livros
+Este website é igual uma loja de livros
 'http://books.toscrape.com/'
-Eu passo por todas as páginas no site, pego as urls da cada livros
+Eu passo por todas as páginas do site, pego as urls da cada livros
 e pego as informações da cada livro:
 Título, categoria, preço e quantidade no estoque
 Depois eu salvo no MySQL.
-Estou dando um intervalo de 1 segundo para a url de cada livro,
-se você quiser remover fique a vontade.
+Coloquei um intervalo de 1 segundo para a url de cada livro,
+se você quiser removê-lo fique a vontade.
 
 Aviso: coloque a sua senha para fazer a conexão com o banco de dados
-e confira se o database exista também, ou crie um.
+e mude o nome do database.
 '''
 
 import requests
@@ -119,12 +119,27 @@ def getPages(pageUrl):
 
 getPages('http://books.toscrape.com/')
 
+'''
+São dados simples, escrevi simples análises.
+'''
+
 cursor.execute('SELECT * FROM livraria LIMIT 10')
 for row in cursor.fetchall():
     print(row)
 
 cursor.execute('SELECT COUNT(id) FROM livraria')
 print(cursor.fetchone())
+
+cursor.execute(
+    '''SELECT
+    category,
+    COUNT(id) AS books_per_category
+    FROM livraria
+    GROUP BY category
+    ORDER BY COUNT(id) DESC'''
+)
+for row in cursor.fetchall():
+    print(row)
 
 cursor.close()
 connection.close()
